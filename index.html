@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>边缘AIGC一句话生成器</title>
+  <style>
+    /* 极简样式，无需CSS框架 */
+    body { max-width: 600px; margin: 20px auto; padding: 0 10px; font-family: sans-serif; }
+    .input-box { margin: 20px 0; }
+    textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 20px; background: #0088ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    #result { margin-top: 20px; padding: 15px; border: 1px solid #eee; border-radius: 4px; }
+    #loading { color: #999; display: none; }
+  </style>
+</head>
+<body>
+  <h1>边缘AIGC一句话生成器</h1>
+  
+  <div class="input-box">
+    <textarea id="prompt" placeholder="输入关键词，如：开心、边缘计算、早安"></textarea>
+    <button onclick="generate()">边缘生成</button>
+    <div id="loading">边缘节点处理中...</div>
+  </div>
+  
+  <div id="result"></div>
+
+  <script>
+    // 极简前端逻辑，无依赖
+    async function generate() {
+      const prompt = document.getElementById('prompt').value.trim();
+      const result = document.getElementById('result');
+      const loading = document.getElementById('loading');
+      
+      if (!prompt) { alert('请输入关键词！'); return; }
+      
+      loading.style.display = 'block';
+      result.innerHTML = '';
+      
+      try {
+        // 调用边缘函数
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        result.innerHTML = data.content || '生成失败';
+      } catch (err) {
+        result.innerHTML = '错误：' + err.message;
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
